@@ -1,15 +1,18 @@
 import { existsSync } from "node:fs";
 import { resolve } from "pathe";
-import { describe, it, expect } from "vitest";
 import { isWindows } from "std-env";
-import { startServer, setupTest, testNitro } from "../tests";
+import { describe, expect, it } from "vitest";
+import { setupTest, startServer, testNitro } from "../tests";
 
-describe("nitro:preset:node", async () => {
-  const ctx = await setupTest("node");
+describe("nitro:preset:node-listener", async () => {
+  const ctx = await setupTest("node-listener");
 
   testNitro(ctx, async () => {
-    const { listener } = await import(resolve(ctx.outDir, "server/index.mjs"));
+    const entryPath = resolve(ctx.outDir, "server/index.mjs");
+    const { listener } = await import(entryPath);
+
     await startServer(ctx, listener);
+
     return async ({ url, ...opts }) => {
       const res = await ctx.fetch(url, opts);
       return res;
